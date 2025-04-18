@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import ScatteredImages from './components/ScatteredImages';
+import { Posts } from './components/Posts';
+
 
 const Layout = ({ children }) => (
   <div className="min-h-screen bg-white text-black font-serif p-6 md:p-16">
@@ -16,32 +19,60 @@ const Layout = ({ children }) => (
 );
 
 const Home = () => (
-  <div className="relative text-4xl md:text-6xl leading-snug">
-    <p>Hello! My name is Otto Vintola.</p>
-    <p>I am a dreamer, concerned with making machines learn through 
-      <span className="text-blue-500 italic relative px-3">
-          patterns
-        <span className="absolute -z-10 top-1/2 left-1/2 w-16 h-16 bg-blue-200 rounded-full -translate-x-1/2 -translate-y-1/2"></span>
-      </span>
-      and 
-      <span className="text-green-500 italic relative px-2">
-          abstraction
-        <span className="absolute -z-10 top-1/2 left-1/2 w-16 h-16 bg-blue-200 rounded-full -translate-x-1/2 -translate-y-1/2"></span>
-      </span>
-      by weaving chaos with the resonance of observations.
-    </p>
-    <p className="mt-4 text-base md:text-lg text-gray-600">
-      Learn <a href="#about" className="underline">about</a> me, contact me on
-      <a href="mailto:otto@example.com" className="underline mx-1">email</a>,
-      <a href="https://instagram.com" className="underline mx-1">Instagram</a>,
-      <a href="https://linkedin.com" className="underline mx-1">LinkedIn</a>,
-      or check out my featured work below ↓
-    </p>
-    <div className="absolute bottom-0 right-0 w-64 h-32 bg-blue-100 rotate-3 -z-10"></div>
+  <div className="relative">
+    <div className="z-0">
+      <ScatteredImages />
+    </div>
+
+    {/* Text in front */}
+    <div className="z-10 relative text-4xl md:text-6xl leading-snug">
+      <p>Hello. My name is Otto Vintola.</p>
+      <p className="mt-2 relative z-10"> I am a dreamer, concerned with making machines learn through{" "}
+        <span className="relative inline-block px-2 z-10">
+          <span className="relative z-10 italic text-blue-500">patterns</span>
+          <span className="absolute top-1/2 left-1/2 w-20 h-20 bg-blue-200 rounded-full -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-multiply"></span>
+        </span>{" "}
+        and 
+        <span className="relative inline-block px-2">
+          <span className="relative z-10 italic text-green-500">abstraction</span>
+          <span 
+            className="absolute top-1/2 left-1/2 w-20 h-20 bg-green-200 
+            -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-multiply"
+            style={{
+              clipPath: "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)"
+            }}
+          ></span>
+        </span>{" "}
+        by weaving chaos with the resonance of observations.
+      </p>
+
+      {/* Description and Links */}
+      <p className="mt-6 text-base md:text-lg text-gray-600 max-w-2xl z-20">
+        Learn <a href="#about" className="underline">about</a> me, contact me on{" "}
+        <a href="mailto:otto@example.com" className="underline">email</a>,{" "}
+        <a href="https://instagram.com" className="underline">Instagram</a>,{" "}
+        <a href="https://linkedin.com" className="underline">LinkedIn</a>, or check out my featured work below ↓
+      </p>
+
+      {/* Tilted Rectangle */}
+      <div className="absolute bottom-10 right-10 w-64 h-40 bg-blue-100 rotate-[6deg] z-0 rounded-lg shadow-md"></div>
+    </div>
+
+    {/* Featured Posts Section */}
+    <div className="mt-32 relative z-10">
+      <h2 className="text-3xl font-bold mb-12">Featured Posts</h2>
+      <Posts />
+    </div>
   </div>
 );
 
-const Blog = () => <div className="text-2xl">Blog coming soon...</div>;
+const Blog = () => (
+  <div>
+    <h1 className="text-4xl font-bold mb-12">Blog</h1>
+    <Posts />
+  </div>
+);
+
 const Reading = () => <div className="text-2xl">Book recommendations coming soon...</div>;
 const Pictures = () => <div className="text-2xl">Picture gallery coming soon...</div>;
 
