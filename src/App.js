@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import ScatteredImages from './components/ScatteredImages';
+// import ScatteredImages from './components/ScatteredImages';
 import { Posts } from './components/Posts';
 
 
@@ -20,9 +20,11 @@ const Layout = ({ children }) => (
 
 const Home = () => (
   <div className="relative">
+
+    {/* Background Images 
     <div className="z-0">
       <ScatteredImages />
-    </div>
+    </div> */}
 
     {/* Text in front */}
     <div className="z-10 relative text-4xl md:text-6xl leading-snug">

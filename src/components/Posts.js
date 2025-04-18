@@ -5,6 +5,12 @@ import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';
 import matter from 'gray-matter';
 
+// Import images
+import vaeImage from '../assets/vae.png';
+
+// Import markdown content as raw text
+import vaePostContent from '../posts/variational-autoencoders.md';
+
 export const PostCard = ({ title, excerpt, image, date, onClick }) => (
   <div 
     onClick={onClick}
@@ -37,20 +43,21 @@ export const Posts = () => {
   const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
-    // In a real implementation, this would fetch markdown files from the posts directory
-    // For now, we'll use a hardcoded example
-    const fetchPosts = async () => {
+    const loadPosts = () => {
       try {
-        const response = await fetch('/posts/variational-autoencoders.md');
-        const text = await response.text();
-        const { data, content } = matter(text);
-        setPosts([{ ...data, content }]);
+        const { data, content } = matter(vaePostContent);
+        const post = {
+          ...data,
+          content,
+          image: vaeImage // Use imported image directly
+        };
+        setPosts([post]);
       } catch (error) {
         console.error('Error loading posts:', error);
       }
     };
 
-    fetchPosts();
+    loadPosts();
   }, []);
 
   if (selectedPost) {
