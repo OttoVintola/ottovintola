@@ -7,7 +7,9 @@ import PostPage from './pages/PostPage'; // Import the new PostPage component
 const Layout = ({ children }) => (
   <div className="min-h-screen bg-white text-black font-serif p-6 md:p-16">
     <header className="flex justify-between items-center text-sm md:text-base">
-      <h1 className="font-bold">Otto Vintola</h1>
+      <h1 className="font-bold">
+        <Link to="/">Otto Vintola</Link>
+      </h1>
       <nav className="space-x-4">
         <Link to="/blog" className="hover:underline">Blog</Link>
         <Link to="/reading" className="hover:underline">Reading</Link>
@@ -50,10 +52,8 @@ const Home = () => (
 
       {/* Description and Links */}
       <p className="mt-6 text-base md:text-lg text-gray-600 max-w-2xl z-20">
-        Learn <a href="#about" className="underline">about</a> me, contact me on{" "}
-        <a href="mailto:otto@example.com" className="underline">email</a>,{" "}
-        <a href="https://instagram.com" className="underline">Instagram</a>,{" "}
-        <a href="https://linkedin.com" className="underline">LinkedIn</a>, or check out my featured work below ↓
+        I can be contacted on{" "}
+        <a href="https://www.linkedin.com/in/otto-vintola-45091b214" className="underline">LinkedIn</a>.
       </p>
 
       {/* Tilted Rectangle */}
@@ -62,7 +62,7 @@ const Home = () => (
 
     {/* Featured Posts Section */}
     <div className="mt-32 relative z-10">
-      <h2 className="text-3xl font-bold mb-12">Featured Posts</h2>
+      <h2 className="text-3xl font-bold mb-12">My Thoughts</h2>
       <Posts />
     </div>
   </div>

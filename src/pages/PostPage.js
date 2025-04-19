@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import matter from 'gray-matter';
 import { PostContent } from '../components/Posts';
-import * as runtime from 'react/jsx-runtime';
 
 // Import unified and plugins
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
-import rehypeMathjax from 'rehype-mathjax';
-import rehypeCitation from 'rehype-citation';
-import rehypeReact from 'rehype-react';
 import remarkRehype from 'remark-rehype';
+import rehypeMathjax from 'rehype-mathjax';
 import rehypeStringify from 'rehype-stringify';
+import { Cite } from '@citation-js/core'; // Import citation-js
+import '@citation-js/plugin-bibtex'; // Import the bibtex plugin
+import '@citation-js/plugin-csl';  // Import CSL plugin for numeric bibliography
+// remark-footnotes removed in favor of IEEE-style numbering via rehype-citation
 
 // Function to fetch markdown based on slug
 async function fetchMarkdownBySlug(slug) {
@@ -49,41 +50,11 @@ async function fetchBibliography(bibFileName) {
 }
 
 const PostPage = () => {
-  const { slug } = useParams(); // Get the slug from the URL
-  const [postMetadata, setPostMetadata] = useState(null); // For frontmatter
-  const [processedContent, setProcessedContent] = useState(null); // Store processed content
+  const { slug } = useParams();
+  const [postMetadata, setPostMetadata] = useState(null);
+  const [processedContent, setProcessedContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Parse BibTeX entries manually
-  function parseBibTeX(bibContent) {
-    const entries = {};
-    const entryRegex = /@(\w+){([^,]+),([^@]+)}/g;
-    let match;
-
-    while ((match = entryRegex.exec(bibContent))) {
-      const [_, type, key, content] = match;
-      const fields = {};
-      
-      // Parse individual fields
-      const fieldContent = content.trim();
-      const fieldRegex = /(\w+)\s*=\s*{([^}]+)}/g;
-      let fieldMatch;
-      
-      while ((fieldMatch = fieldRegex.exec(fieldContent))) {
-        const [__, fieldName, fieldValue] = fieldMatch;
-        fields[fieldName] = fieldValue;
-      }
-
-      entries[key] = {
-        type,
-        ...fields,
-        id: key // Important: id must match the citation key
-      };
-    }
-    
-    return entries;
-  }
 
   useEffect(() => {
     const loadAndProcessPost = async () => {
@@ -97,56 +68,68 @@ const PostPage = () => {
       if (markdownContent) {
         try {
           const { data: metadata, content: rawMarkdown } = matter(markdownContent);
-          setPostMetadata(metadata); // Store frontmatter
+          setPostMetadata(metadata);
 
           // --- Fetch and Parse Bibliography ---
-          let bibliography = null;
-          if (slug === 'understanding-variational-autoencoders') { 
-            const bibContent = await fetchBibliography('VAE.bib');
+          // Load BibTeX and convert to CSL-JSON if available
+          let bibJsonData = null;
+          let bibContent = null;
+          if (slug === 'understanding-variational-autoencoders') {
+            bibContent = await fetchBibliography('VAE.bib');
             if (bibContent) {
               try {
-                console.log('Parsing BibTeX content...');
-                bibliography = parseBibTeX(bibContent);
-                console.log('Bibliography parsed:', bibliography);
-              } catch (parseError) {
-                console.error('Error parsing bibliography:', parseError);
+                const citeObj = new Cite(bibContent);
+                bibJsonData = citeObj.get(); // CSL-JSON array
+              } catch (_) {
+                console.warn('Failed to parse BibTeX for citations.');
               }
             }
           }
+          // --- End Fetch and Parse Bibliography ---
+
+          // Manual citation numbering in markdown: replace [@key] with [n]
+          let mdToRender = rawMarkdown;
+          const citationKeys = Array.from(mdToRender.matchAll(/\[@([^\]]+)\]/g), m => m[1]);
+          const uniqueKeys = Array.from(new Set(citationKeys));
+          uniqueKeys.forEach((key, i) => {
+            mdToRender = mdToRender.replace(new RegExp(`\\[@${key}\\]`, 'g'), `[${i + 1}]`);
+          });
 
           // --- Process Markdown using unified ---
           console.log('Setting up processor...');
           const processor = unified()
             .use(remarkParse)
             .use(remarkMath)
-            .use(remarkGfm)
-            .use(remarkRehype)
-            .use(rehypeMathjax);
+            .use(remarkGfm);
 
-          // Add rehype-citation if bibliography exists
-          if (bibliography) {
-            console.log('Adding rehype-citation with parsed bibliography');
-            processor.use(rehypeCitation, {
-              bibliography,
-              suppressBibliography: false // Set to false to generate a bibliography section
-            });
-          }
-
-          processor.use(rehypeStringify); // Add stringify to compile to HTML
+          // Render markdown (with numbered citations) to HTML
+          processor
+            .use(remarkRehype) // Bridge to rehype
+            .use(rehypeMathjax)
+            .use(rehypeStringify);
 
           // Process markdown to get HTML
           console.log('Processing markdown to HTML...');
-          const result = await processor.process(rawMarkdown);
+          const file = await processor.process(mdToRender);
           console.log('Processing complete.');
-          
-          // Set the HTML string as content
-          setProcessedContent(result.toString());
+
+          let finalHtml = file.toString();
+          // Append generated References if bibliography data exists
+          if (bibJsonData && uniqueKeys.length) {
+            // Order entries by appearance
+            const ordered = uniqueKeys
+              .map(key => bibJsonData.find(e => e.id === key))
+              .filter(Boolean);
+            // Use numeric Vancouver style for bibliography (matches [n] citations)
+            const bibHtml = new Cite(ordered).format('bibliography', { format: 'html', template: 'vancouver' });
+            finalHtml += `<section><h2>References</h2>${bibHtml}</section>`;
+          }
+          setProcessedContent(finalHtml);
           // --- End Process Markdown ---
 
         } catch (processError) {
-          // Log the specific error before setting state
           console.error('Error in loadAndProcessPost catch block:', processError);
-          setError('Failed to process post content.');
+          setError('Failed to process post content: ' + processError.message);
         }
       } else {
         setError('Post not found.');
@@ -169,12 +152,12 @@ const PostPage = () => {
     return <div>Post not found or failed to process.</div>; 
   }
 
-  // Pass the processed React content to PostContent
+  // Pass the HTML string content to PostContent
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Optional: Display title from metadata 
-      {postMetadata?.title && <h1 className="text-3xl font-bold mb-4">{postMetadata.title}</h1>} */}
-      <PostContent content={processedContent} /> 
+      {/* Optional: Display title from metadata
+      {postMetadata?.title && <h1 className="text-3xl font-bold mb-4 text-center">{postMetadata.title}</h1>} */}
+      <PostContent content={processedContent} />
     </div>
   );
 };

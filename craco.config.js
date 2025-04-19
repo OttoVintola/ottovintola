@@ -27,6 +27,12 @@ module.exports = {
         test: /\.md$/,
         type: 'asset/source',
       });
+      // --- CSL Loader Configuration ---
+      // Import citation style files (e.g. .csl) as raw text
+      webpackConfig.module.rules.push({
+        test: /\.csl$/,
+        type: 'asset/source',
+      });
       // --- End Markdown Loader Configuration ---
 
       // Ensure the modified config is returned

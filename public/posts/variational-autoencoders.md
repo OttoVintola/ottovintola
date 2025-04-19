@@ -7,7 +7,7 @@ excerpt: "A deep dive into the mathematics and intuition behind VAEs"
 
 # Understanding Variational Autoencoders
 
-Variational Autoencoders (VAEs) are a fascinating class of deep learning models that combine probabilistic graphical models with neural networks. They allow us to both compress data into a learned continuous latent representation and generate new samples from that learned distribution [@Rosenblatt1958ThePA]
+Variational Autoencoders (VAEs) are a fascinating class of deep learning models that combine probabilistic graphical models with neural networks. They allow us to both compress data into a learned continuous latent representation and generate new samples from that learned distribution. Variational autoencoders are cool [@kingma2013]
 
 ## The Math Behind VAEs
 
@@ -35,3 +35,4 @@ Here's a visual representation:
 ![VAE Architecture Diagram](/images/vae-architecture.png)
 
 This architecture allows for both efficient inference and generation of new samples.
+
