@@ -26,7 +26,7 @@ async function fetchMarkdownBySlug(slug) {
   // Map slug to markdown file path
   const postMap = {
     'understanding-variational-autoencoders': '/posts/variational-autoencoders.md',
-    'advanced-sql-queries': '/posts/Advanced SQL.md'
+    'advanced-sql-and-query-optimization': '/posts/advanced-sql-and-query-optimization.md'
   };
 
 

@@ -95,7 +95,6 @@ export const Posts = () => {
             } else {
               image = vaeImage; // Fallback to default image
             }
-
             return {
               ...data,
               content,

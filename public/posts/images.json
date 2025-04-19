@@ -3,7 +3,7 @@
         "variational-autoencoders.md": [
             "../assets/vae.png"
         ],
-        "Advanced SQL.md": [
+        "advanced-sql-and-query-optimization.md": [
             "../assets/sql.png"
         ]
     }
