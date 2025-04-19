@@ -52,32 +52,64 @@ export const Posts = () => {
 
   useEffect(() => {
     const loadPosts = async () => {
-      const postPath = '/posts/variational-autoencoders.md';
       try {
-        console.log('Fetching markdown from public path:', postPath);
-        const response = await fetch(`${process.env.PUBLIC_URL}${postPath}`);
+        // Fetch the list of post filenames first
+        const response = await fetch(`${process.env.PUBLIC_URL}/posts/posts.json`);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status} fetching ${postPath}`);
+          throw new Error('Failed to fetch posts.json');
         }
-        const markdownContent = await response.text();
-        console.log('Fetched markdown content successfully.');
+        const { posts: postFiles } = await response.json();
 
-        const { data, content } = matter(markdownContent);
-        // Add a slug to the post object
-        const slug = createSlug(data.title || 'untitled'); 
-        const post = {
-          ...data,
-          content, // Keep content for potential future use, but not needed for card display
-          image: vaeImage,
-          slug: slug, // Add the generated slug
-        };
-        console.log('Created post object:', post);
-        setPosts([post]);
+        // Fetch the image mappings
+        const imagesResponse = await fetch(`${process.env.PUBLIC_URL}/posts/images.json`);
+        if (!imagesResponse.ok) {
+          throw new Error('Failed to fetch images.json');
+        }
+        const { images: imageMap } = await imagesResponse.json();
+
+        // Then load all posts
+        const postsData = await Promise.all(
+          postFiles.map(async (filename) => {
+            const postPath = `/posts/${filename}`;
+            const response = await fetch(`${process.env.PUBLIC_URL}${postPath}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status} fetching ${postPath}`);
+            }
+            const markdownContent = await response.text();
+            const { data, content } = matter(markdownContent);
+            const slug = createSlug(data.title || 'untitled');
+            
+            // Get the image for this post from the imageMap
+            const postImages = imageMap[filename] || [];
+            const firstImage = postImages[0]; // Use the first image if available
+            
+            let image;
+            if (firstImage) {
+              const imageName = firstImage.split('/').pop(); // Get just the filename
+              try {
+                image = require(`../assets/${imageName}`);
+              } catch (e) {
+                console.warn(`Could not load image for ${filename}:`, e);
+                image = vaeImage; // Fallback to default image
+              }
+            } else {
+              image = vaeImage; // Fallback to default image
+            }
+
+            return {
+              ...data,
+              content,
+              image,
+              slug,
+            };
+          })
+        );
+        setPosts(postsData);
       } catch (error) {
         console.error('Error loading or processing markdown:', error);
       }
     };
-
+     
     loadPosts();
   }, []);
 

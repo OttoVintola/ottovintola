@@ -1,0 +1,10 @@
+{
+    "images": {
+        "variational-autoencoders.md": [
+            "../assets/vae.png"
+        ],
+        "Advanced SQL.md": [
+            "../assets/sql.png"
+        ]
+    }
+}

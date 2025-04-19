@@ -16,13 +16,20 @@ import '@citation-js/plugin-bibtex'; // Import the bibtex plugin
 import '@citation-js/plugin-csl';  // Import CSL plugin for numeric bibliography
 // remark-footnotes removed in favor of IEEE-style numbering via rehype-citation
 
+
+const bibMap = {
+    'understanding-variational-autoencoders': '/bibliography/VAE.bib'
+    };
+
 // Function to fetch markdown based on slug
 async function fetchMarkdownBySlug(slug) {
   // Map slug to markdown file path
   const postMap = {
-    'understanding-variational-autoencoders': '/posts/variational-autoencoders.md'
-    // Add other posts here
+    'understanding-variational-autoencoders': '/posts/variational-autoencoders.md',
+    'advanced-sql-queries': '/posts/Advanced SQL.md'
   };
+
+
   const postPath = postMap[slug];
   if (!postPath) return null;
 
@@ -74,8 +81,9 @@ const PostPage = () => {
           // Load BibTeX and convert to CSL-JSON if available
           let bibJsonData = null;
           let bibContent = null;
-          if (slug === 'understanding-variational-autoencoders') {
-            bibContent = await fetchBibliography('VAE.bib');
+          const bibFile = bibMap[slug];
+          if (bibFile) {
+            bibContent = await fetchBibliography(bibFile.split('/').pop());
             if (bibContent) {
               try {
                 const citeObj = new Cite(bibContent);

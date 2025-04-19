@@ -1,12 +1,8 @@
 ---
-layout: post
 title: Advanced SQL and Query Optimization
 date: 2024-02-26 11:12
-description: What I learned about SQL and making queries run faster and more sustainably than before
-tags:
-categories:
-pretty_table: true
-related_posts: true
+excerpt: What I learned about SQL and making queries run faster and more sustainably than before
+image: ../assets/sql.png
 ---
 
 ## Introduction
