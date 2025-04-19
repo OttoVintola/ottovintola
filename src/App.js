@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 // import ScatteredImages from './components/ScatteredImages';
 import { Posts } from './components/Posts';
-
+import PostPage from './pages/PostPage'; // Import the new PostPage component
 
 const Layout = ({ children }) => (
   <div className="min-h-screen bg-white text-black font-serif p-6 md:p-16">
@@ -87,6 +87,8 @@ export default function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/reading" element={<Reading />} />
           <Route path="/pictures" element={<Pictures />} />
+          {/* Add the route for individual posts */}
+          <Route path="/post/:slug" element={<PostPage />} /> 
         </Routes>
       </Layout>
     </Router>
