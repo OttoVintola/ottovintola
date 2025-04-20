@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math';
-import rehypeMathjax from 'rehype-mathjax';
-import remarkGfm from 'remark-gfm';
 import matter from 'gray-matter';
-import remarkCite from '@benrbray/remark-cite'; // Import remarkCite
-// Remove the path import
-// import path from 'path'; 
+
 
 // Import images
 import vaeImage from '../assets/vae.png';
