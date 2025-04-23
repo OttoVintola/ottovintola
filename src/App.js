@@ -4,11 +4,12 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Posts } from './components/Posts';
 import PostPage from './pages/PostPage'; // Import the new PostPage component
 
+
 const Layout = ({ children }) => (
   <div className="min-h-screen bg-white text-black font-serif p-6 md:p-16">
     <header className="flex justify-between items-center text-sm md:text-base">
       <h1 className="font-bold">
-        <Link to="/">Otto Vintola</Link>
+        <Link to="/" className="hover:underline">Otto Vintola</Link>
       </h1>
       <nav className="space-x-4">
         <Link to="/blog" className="hover:underline">Blog</Link>
