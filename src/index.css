@@ -16,3 +16,17 @@ code {
     monospace;
 }
 
+.prose code:not(pre code) {
+  color:rgb(0, 0, 0);
+  background-color: #f5f2f0;
+  font-size: 0.95em;
+  border-radius: 0.25em;
+  padding: 0.15em 0.4em;
+  font-family: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+}
+
+.prose code::before,
+.prose code::after {
+  content: none !important;
+}
+

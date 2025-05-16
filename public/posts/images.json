@@ -5,6 +5,12 @@
         ],
         "advanced-sql-and-query-optimization.md": [
             "../assets/sql.png"
+        ],
+        "programming.md": [
+            "../assets/bigo.png"
+        ],
+        "finetuning-deep-learning-models.md": [
+            "../assets/finetuning.png"
         ]
     }
 }

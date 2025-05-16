@@ -1,9 +1,9 @@
+1. Add rest of the posts
+
+2. Support Medium articles
+
+3. Make Reading and Pictures pages
+
+4. Make projects page
 
 
-1. Make Otto Vintola (homebutton) underline when hovering
-
-2. Add rest of the posts
-
-3. Support Medium articles
-
-4. Make Reading and Pictures pages

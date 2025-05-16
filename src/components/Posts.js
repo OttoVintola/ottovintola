@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Added useRef
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import matter from 'gray-matter';
 
@@ -30,11 +30,28 @@ export const PostCard = ({ title, excerpt, image, date, onClick }) => (
   </div>
 );
 
-// Update PostContent to handle HTML content
+// Update PostContent to handle HTML content and trigger MathJax
 export const PostContent = ({ content }) => {
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.startup.promise.then(() => {
+          console.log('MathJax ready in PostContent, typesetting element:', contentRef.current);
+          window.MathJax.typesetPromise([contentRef.current])
+            .catch(err => console.error('MathJax.typesetPromise error in PostContent:', err));
+        }).catch(err => console.error('MathJax.startup.promise error in PostContent:', err));
+      } else {
+        console.warn('MathJax not available in PostContent when content updated.');
+      }
+    }
+  }, [content]); // Re-run when content changes
+
   return (
-    <div 
-      className="prose lg:prose-xl mx-auto"
+    <div
+      ref={contentRef}
+      className="prose lg:prose-xl mx-auto text-black"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );

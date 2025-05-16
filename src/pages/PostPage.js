@@ -9,16 +9,19 @@ import remarkParse from 'remark-parse';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
-import rehypeMathjax from 'rehype-mathjax';
 import rehypeStringify from 'rehype-stringify';
 import { Cite } from '@citation-js/core'; // Import citation-js
 import '@citation-js/plugin-bibtex'; // Import the bibtex plugin
 import '@citation-js/plugin-csl';  // Import CSL plugin for numeric bibliography
+import { u } from 'unist-builder'; // Import unist-builder's u
+
+
 // remark-footnotes removed in favor of IEEE-style numbering via rehype-citation
 
 
 const bibMap = {
-    'understanding-variational-autoencoders': '/bibliography/VAE.bib'
+    'understanding-variational-autoencoders': '/bibliography/VAE.bib',
+    'quick-notes-on-finetuning-deep-learning-models': '/bibliography/finetuning.bib',
     };
 
 // Function to fetch markdown based on slug
@@ -27,7 +30,9 @@ async function fetchMarkdownBySlug(slug) {
   const postMap = {
     'understanding-variational-autoencoders': '/posts/variational-autoencoders.md',
     'advanced-sql-and-query-optimization': '/posts/advanced-sql-and-query-optimization.md',
-    
+    'teaching-the-advanced-programming-course': '/posts/programming.md',
+    'quick-notes-on-finetuning-deep-learning-models': '/posts/finetuning-deep-learning-models.md',
+
   };
 
 
@@ -57,13 +62,24 @@ async function fetchBibliography(bibFileName) {
   }
 }
 
+// Custom handlers for converting remark-math nodes to HAST
+// This will output TeX wrapped in \\(...\\) and \\\[...\\\] for client-side MathJax
+const remarkRehypeHandlers = {
+  inlineMath: (h, node) => {
+    return u('text', '\\(' + node.value + '\\)'); // Output MathJax inline delimiter
+  },
+  math: (h, node) => {
+    return u('text', '\\\\[' + node.value + '\\\\]'); // Output MathJax display delimiter
+  }
+};
+
 const PostPage = () => {
   const { slug } = useParams();
   const [postMetadata, setPostMetadata] = useState(null);
   const [processedContent, setProcessedContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  console.log('PostPage slug:', slug);
   useEffect(() => {
     const loadAndProcessPost = async () => {
       setLoading(true);
@@ -108,13 +124,12 @@ const PostPage = () => {
           console.log('Setting up processor...');
           const processor = unified()
             .use(remarkParse)
-            .use(remarkMath)
-            .use(remarkGfm);
-
-          // Render markdown (with numbered citations) to HTML
-          processor
-            .use(remarkRehype) // Bridge to rehype
-            .use(rehypeMathjax)
+            .use(remarkMath) // Identifies math syntax
+            .use(remarkGfm)
+            .use(remarkRehype, { 
+              handlers: remarkRehypeHandlers, 
+              allowDangerousHtml: true // Important if handlers were to produce raw HTML, though here we produce text nodes
+            }) // Convert to HTML, using custom handlers for math
             .use(rehypeStringify);
 
           // Process markdown to get HTML
@@ -130,11 +145,21 @@ const PostPage = () => {
               .map(key => bibJsonData.find(e => e.id === key))
               .filter(Boolean);
             // Use numeric Vancouver style for bibliography (matches [n] citations)
-            const bibHtml = new Cite(ordered).format('bibliography', { format: 'html', template: 'vancouver' });
+            const bibHtmlRaw = new Cite(ordered).format('bibliography', { format: 'html', template: 'vancouver' });
+            // Post-process to remove unwanted line breaks after citation numbers
+            const pattern = new RegExp("(\\\\d+\\\\.)\\\\s*<br\\\\s*/?\\s*>", "gi");
+            const bibHtml = bibHtmlRaw.replace(pattern, '$1 ');
             finalHtml += `<section><h2>References</h2>${bibHtml}</section>`;
           }
           setProcessedContent(finalHtml);
           // --- End Process Markdown ---
+
+          // REMOVED MathJax call from here, PostContent will handle it.
+          // if (window.MathJax && window.MathJax.typesetPromise) {
+          //   window.MathJax.typesetPromise();
+          // } else {
+          //   console.warn('MathJax or typesetPromise not available to re-render math.');
+          // }
 
         } catch (processError) {
           console.error('Error in loadAndProcessPost catch block:', processError);
