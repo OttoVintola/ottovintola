@@ -54,7 +54,9 @@ const Home = () => (
       {/* Description and Links */}
       <p className="mt-6 text-base md:text-lg text-gray-600 max-w-2xl z-20">
         I can be contacted on{" "}
-        <a href="https://www.linkedin.com/in/otto-vintola-45091b214" className="underline">LinkedIn</a>.
+        <a href="https://www.linkedin.com/in/otto-vintola-45091b214" className="underline">LinkedIn</a>
+        , or{ " "}
+        <a href="https://www.youtube.com/@ottovintola" className="underline">YouTube</a>.
       </p>
 
       {/* Tilted Rectangle */}
@@ -76,7 +78,7 @@ const Blog = () => (
   </div>
 );
 
-const Reading = () => <div className="text-2xl">Book recommendations coming soon...</div>;
+const Reading = () => <div className="text-2xl">Reading recommendations coming soon...</div>;
 const Pictures = () => <div className="text-2xl">Picture gallery coming soon...</div>;
 
 export default function App() {

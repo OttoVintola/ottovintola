@@ -35,11 +35,13 @@ The assignments are written in Scala with propietary architectures and libraries
 
 This course is one of the biggest courses in the department and is a requirement for all students in the computer science and data science programs. Every year it has 600 - 800 students. So, you can imagine the scale of the course – during the first lectures there are usually not even enough seats for everyone, so some people end up standing. 
 
-![CS Building](../images/programming/csbld.jpg) ![Aalto](../images/programming/aalto.jpg)
+![CS Building](../images/programming/csbld.jpg)
 
 *Picture of the lecture room in less capacity than the course usually has...*
 
-Below is an implementation of a `binary search` algorithm in Scala, which was used in the course to teach the students about the efficiency of algorithms and the importance of data structures – although there is a separate Data Structures and Algorithms course that runs every autumn semester. It uses an abstract `Ordering[T]` to compare arbitrary types `T`, however, it is merely a simple example and the real assignments are much more challenging (not to mention the exam). 
+![Aalto](../images/programming/aalto.jpg)
+
+Below is an implementation of a `binarySearch` algorithm in Scala, which was used in the course to teach the students about the efficiency of algorithms and the importance of data structures – although there is a separate Data Structures and Algorithms course that runs every autumn semester. It uses an abstract `Ordering[T]` to compare arbitrary types `T`, however, it is merely a simple example and the real assignments are much more challenging (not to mention the exam). 
 
 ```scala
 def binarySearch[T](s: IndexedSeq[T], k: T)(using Ordering[T]) : Boolean =
@@ -64,4 +66,4 @@ The assignemnts are usually crafted such that online tools and resources can hel
 
 # References
 
-1. Programming 2 notes (Petteri Kaski, Tommi Junttila, and Lukas Ahrenberg 2013-2024) at [https://a1120.cs.aalto.fi/2024/notes/](https://a1120.cs.aalto.fi/2024/notes/)
+1. Programming 2 notes (Petteri Kaski, Tommi Junttila, and Lukas Åhrenberg 2013-2024) at [https://a1120.cs.aalto.fi/2024/notes/](https://a1120.cs.aalto.fi/2024/notes/)

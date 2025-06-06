@@ -49,15 +49,13 @@ for n in range(epochs):
     optimizer.step()
 
 torch.save(model, 'fine_tuned_model.pth')
-
-
 ```
 
 ## PEFT methods
 
 The basic forward, backward and parameter update steps are the most basic form of fine-tuning, and for a good reason, it works. However, there are some methods that can be used to speed up the fine-tuning process. One of these methods is the [PEFT](https://arxiv.org/abs/2106.01345) method, which is a method for fine-tuning large language models. There will be a brief overview of two PEFT techniques: LoRA and adapter modules.
 
-## LoRA
+### LoRA
 The first one is LoRA [@hu2021loralowrankadaptationlarge], which is a low-rank adaptation method for large language models – retraining models becomes less feasible when the number of parameters get higher. The idea is to use a low-rank approximation of the model to reduce the computational cost of fine-tuning. The pre-trained weight matrix $$ W_0 \in \mathbb{R}^{d \times k} $$ is updated by $$
  W_0 + \Delta W = W_0 + BA $$, where $$ B \in \mathbb{R}^{d \times r} $$ and $$ A \in \mathbb{R}^{r \times k} $$ are low-rank matrices and the rank $$ r << min(d, k) $$ with $$ x \in \mathbb{R}^{k} $$. The matrix $$  W_0  $$ does not receive any gradients, and the low-rank matrices are updated using the standard fine-tuning procedure. 
  
@@ -70,16 +68,14 @@ The first one is LoRA [@hu2021loralowrankadaptationlarge], which is a low-rank a
 Using LoRA in ```PyTorch``` requires a redefinition of the model class – which is quite involved but doable. ```Hugging Face``` instead has a [LoRA implementation](https://huggingface.co/transformers/model_doc/lora.html) that can be used with a few lines of code. 
 
 ```python
-
 from transformers import LoRAForSequenceClassification, LoRAConfig
 
 config = LoRAConfig.from_pretrained('bert-base-uncased')
 model = LoRAForSequenceClassification.from_pretrained('bert-base-uncased', config=config)
-
 ```
 
 
-## Adapter modules
+### Adapter modules
 
 The second method is the adapter modules [@houlsby2019parameterefficienttransferlearningnlp], which is a method for fine-tuning large language models. The idea is to add a small set of trainable parameters to the pre-trained model to adapt it to a new task. The adapter modules are added to the pre-trained model and are trained using the standard fine-tuning procedure. 
 
@@ -90,9 +86,6 @@ The second method is the adapter modules [@houlsby2019parameterefficienttransfer
 The following code snippet shows how to add an adapter module to a pre-trained model in `PyTorch`. It is relatively simple to implement, it is just like adding another layer on top of the pre-trained model. 
 
 ```python
-
-import torch
-
 class TransformerWithAdapter(torch.nn.Module):
     def __init__(self, adapter): 
         super(TransformerWithAdapter, self).__init__()
@@ -116,13 +109,17 @@ for param in self.model.parameters():
 
 Finetuning might be computationally cheaper than training a foundational model, but it is still not cheap! Finetuning a model with 340 M parameters – like BERT large – then just loading the model to memory requires $\textbf{1.3 GB}$ of space. With quantization, it can be reduced but with basic ```torch.float32``` it is 1.3 GB, because each parameter is a 32-bit (4 byte) number, this means multiplying the number of parameters by 4. 
 
-Training the same model will require
-  1. Model parameters: 340 M parameters * 4 bytes = 1.3 GB
-  2. Gradients: 340 M parameters * 4 bytes = 1.3 GB
-  3. Optimizer states: 340 M parameters * 4 bytes = 1.3 GB
-  4. Activations 340 M parameters * 4 bytes * B = 1.3 GB * B, where B represents the batch size.
+| Component | Calculation | Memory Required |
+|-----------|-------------|-----------------|
+| Model parameters | 340 M parameters × 4 bytes | 1.3 GB |
+| Gradients | 340 M parameters × 4 bytes | 1.3 GB |
+| Optimizer states | 340 M parameters × 4 bytes | 1.3 GB |
+| Activations | 340 M parameters × 4 bytes × B | 1.3 GB × B |
 
-This means that the total memory requirement for training the model is 3.9 GB + 1.3 GB * B. Starting from our original 340 M parameters, one would not think that the computational capacity required would explode so suddenly. So, even though fine-tuning is a cheaper and faster alternative to training a foundational model, be prepared for the compute requirements.
+
+*Note: B represents the batch size*
+
+This means that the total memory requirement for training the model is 3.9 GB + 1.3 GB × B. Starting from our original 340 M parameters, one would not think that the computational capacity required would explode so suddenly. So, even though fine-tuning is a cheaper and faster alternative to training a foundational model, be prepared for the compute requirements.
 
 
 
@@ -135,7 +132,6 @@ How much data is required to teach a model the proprietary task. Well obviously,
 Imbalanced datasets are a common problem in data science, and fine-tuning is no exception. The problem with imbalanced datasets is that the model will learn to predict the majority class, and not the minority class. This can be solved by using a weighted loss function, where the loss of the minority class is weighted more than the majority class. In `PyTorch` this can be done i.e. using the `torch.nn.CrossEntropyLoss` function, which has a `weight` parameter. 
 
 ```python
-import torch
 weigths = compute_weights(data)
 criterion = torch.nn.CrossEntropyLoss(weight=weights) // weights has to be a tensor of dim (num_classes)
 ``` 
@@ -143,8 +139,8 @@ criterion = torch.nn.CrossEntropyLoss(weight=weights) // weights has to be a ten
 Another way to solve the problem is to use a sampler, which samples the minority class more often than the majority class. The idea is to "feed" the model data in a way that the minority class is seen more often than the majority class. For example, with `PyTorch` (again) using the `WeightedRandomSampler` class. 
 
 ```python
-import torch
 weights = compute_weights(data)
+
 sampler = torch.utils.data.WeightedRandomSampler(weights, len(weights))
 data = DataLoader(data, sampler=sampler)
 ```

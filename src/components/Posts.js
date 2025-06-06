@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'; // Added useRef
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import matter from 'gray-matter';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import * as ReactDOMClient from 'react-dom/client';
 
 
 // Import images
@@ -38,7 +41,6 @@ export const PostContent = ({ content }) => {
     if (contentRef.current) {
       if (window.MathJax && window.MathJax.typesetPromise) {
         window.MathJax.startup.promise.then(() => {
-          console.log('MathJax ready in PostContent, typesetting element:', contentRef.current);
           window.MathJax.typesetPromise([contentRef.current])
             .catch(err => console.error('MathJax.typesetPromise error in PostContent:', err));
         }).catch(err => console.error('MathJax.startup.promise error in PostContent:', err));
@@ -46,13 +48,120 @@ export const PostContent = ({ content }) => {
         console.warn('MathJax not available in PostContent when content updated.');
       }
     }
-  }, [content]); // Re-run when content changes
+  }, [content]);
+
+  // Helper to render code blocks with SyntaxHighlighter
+  const renderContent = () => {
+    // Use a DOMParser to parse the HTML and replace <pre><code> blocks
+    const parser = new window.DOMParser();
+    const doc = parser.parseFromString(`<div>${content}</div>`, 'text/html');
+    const codeBlocks = doc.querySelectorAll('pre > code');
+    codeBlocks.forEach(codeNode => {
+      const code = codeNode.textContent;
+      const className = codeNode.className || '';
+      const match = className.match(/language-(\w+)/);
+      const language = match ? match[1] : '';
+      // Create a wrapper div for React to mount the SyntaxHighlighter
+      const wrapper = doc.createElement('div');
+      wrapper.setAttribute('data-syntax-highlighter', 'true');
+      // Store code and language as attributes for later hydration
+      wrapper.setAttribute('data-code', encodeURIComponent(code));
+      wrapper.setAttribute('data-language', language);
+      codeNode.parentNode.replaceWith(wrapper);
+    });
+    return doc.body.innerHTML;
+  };
+
+  // Hydrate code blocks after rendering
+  useEffect(() => {
+    if (contentRef.current) {
+      const wrappers = contentRef.current.querySelectorAll('[data-syntax-highlighter]');
+      wrappers.forEach(wrapper => {
+        const code = decodeURIComponent(wrapper.getAttribute('data-code'));
+        const language = wrapper.getAttribute('data-language');
+        if (!wrapper._root) {
+          wrapper._root = ReactDOMClient.createRoot(wrapper);
+        }
+        // Render the copy button as part of the React tree
+        wrapper._root.render(
+          <div style={{ position: 'relative' }}>
+            <button
+              className="copy-btn"
+              aria-label="Copy code to clipboard"
+              style={{
+                position: 'absolute',
+                top: '-10px', // completely flush to top
+                right: '-10px', // completely flush to right
+                background: 'transparent',
+                border: 'none',
+                borderRadius: '0.25em',
+                padding: 0,
+                fontSize: '1.5em',
+                cursor: 'pointer',
+                zIndex: 10,
+                opacity: 0.4,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '2.5em',
+                height: '2.5em',
+                transition: 'opacity 0.2s, background 0.2s, transform 0.15s cubic-bezier(.4,2,.6,1)',
+                WebkitTapHighlightColor: 'transparent',
+              }}
+              onClick={e => {
+                e.stopPropagation();
+                navigator.clipboard.writeText(code);
+                // Add click animation
+                const btn = e.currentTarget;
+                btn.classList.add('copy-btn-clicked');
+                setTimeout(() => btn.classList.remove('copy-btn-clicked'), 150);
+              }}
+            >
+              {/* SVG copy icon, larger */}
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="7" y="10" width="13" height="13" rx="2.5" fill="#e6f2ff" stroke="#222" strokeWidth="1.5"/>
+                <rect x="11" y="5" width="13" height="13" rx="2.5" fill="#fff" stroke="#222" strokeWidth="1.5"/>
+              </svg>
+            </button>
+            <SyntaxHighlighter
+              language={language}
+              style={vscDarkPlus}
+              PreTag="div"
+              customStyle={{ background: '#e6f2ff', color: '#222', fontSize: '0.7em', position: 'relative' }}
+              codeTagProps={{ style: { background: '#e6f2ff', color: '#222', fontSize: '1.1em' } }}
+            >
+              {code}
+            </SyntaxHighlighter>
+          </div>
+        );
+      });
+    }
+  }, [content]);
+
+  // Add a little CSS for the copy button (optional, for hover effect)
+  useEffect(() => {
+    const styleId = 'copy-btn-style';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.innerHTML = `
+        .copy-btn {
+          transition: transform 0.15s cubic-bezier(.4,2,.6,1);
+        }
+        .copy-btn:hover { background: #e6f2ff; border-color: #222; opacity: 1; }
+        .copy-btn-clicked {
+          transform: scale(0.95);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
 
   return (
     <div
       ref={contentRef}
       className="prose lg:prose-xl mx-auto text-black"
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: renderContent() }}
     />
   );
 };

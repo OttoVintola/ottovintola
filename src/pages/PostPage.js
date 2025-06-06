@@ -14,6 +14,7 @@ import { Cite } from '@citation-js/core'; // Import citation-js
 import '@citation-js/plugin-bibtex'; // Import the bibtex plugin
 import '@citation-js/plugin-csl';  // Import CSL plugin for numeric bibliography
 import { u } from 'unist-builder'; // Import unist-builder's u
+import rehypeRaw from 'rehype-raw';
 
 
 // remark-footnotes removed in favor of IEEE-style numbering via rehype-citation
@@ -22,6 +23,7 @@ import { u } from 'unist-builder'; // Import unist-builder's u
 const bibMap = {
     'understanding-variational-autoencoders': '/bibliography/VAE.bib',
     'quick-notes-on-finetuning-deep-learning-models': '/bibliography/finetuning.bib',
+    'multilayer-perceptrons': '/bibliography/multilayer-perceptrons.bib',
     };
 
 // Function to fetch markdown based on slug
@@ -32,6 +34,8 @@ async function fetchMarkdownBySlug(slug) {
     'advanced-sql-and-query-optimization': '/posts/advanced-sql-and-query-optimization.md',
     'teaching-the-advanced-programming-course': '/posts/programming.md',
     'quick-notes-on-finetuning-deep-learning-models': '/posts/finetuning-deep-learning-models.md',
+    'multilayer-perceptrons': '/posts/multilayer-perceptrons.md',
+    "some-recent-thoughts": '/posts/Some recent thoughts.md',
 
   };
 
@@ -130,6 +134,7 @@ const PostPage = () => {
               handlers: remarkRehypeHandlers, 
               allowDangerousHtml: true // Important if handlers were to produce raw HTML, though here we produce text nodes
             }) // Convert to HTML, using custom handlers for math
+            .use(rehypeRaw) // <-- Add this line to support raw HTML in markdown
             .use(rehypeStringify);
 
           // Process markdown to get HTML

@@ -1,8 +1,5 @@
 {
     "images": {
-        "variational-autoencoders.md": [
-            "../assets/vae.png"
-        ],
         "advanced-sql-and-query-optimization.md": [
             "../assets/sql.png"
         ],
@@ -10,7 +7,13 @@
             "../assets/bigo.png"
         ],
         "finetuning-deep-learning-models.md": [
-            "../assets/finetuning.png"
+            "../assets/lora.png"
+        ],
+        "multilayer-perceptrons.md": [
+            "../assets/mlp.png"
+        ],
+        "Some recent thoughts.md": [
+            "../assets/littlebro_and_I.png"
         ]
     }
 }

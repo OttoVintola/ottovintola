@@ -2,9 +2,8 @@
   "posts": [
     "advanced-sql-and-query-optimization.md",
     "finetuning-deep-learning-models.md",
-    "Multilayer Perceptrons.md",
+    "multilayer-perceptrons.md",
     "programming.md",
-    "variational-autoencoders.md",
-    "What I know.md"
+    "Some recent thoughts.md"
   ]
 }

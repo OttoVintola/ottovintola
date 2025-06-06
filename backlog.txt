@@ -1,4 +1,4 @@
-1. Add rest of the posts
+1. Add rest of the posts and fix current ones
 
 2. Support Medium articles
 
