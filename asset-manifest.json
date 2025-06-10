@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/ottovintola.com/static/css/main.f4d4707f.css",
-    "main.js": "/ottovintola.com/static/js/main.315c08b4.js",
+    "main.js": "/ottovintola.com/static/js/main.e19e2f51.js",
     "static/js/453.fc9d5551.chunk.js": "/ottovintola.com/static/js/453.fc9d5551.chunk.js",
     "static/media/graph.png": "/ottovintola.com/static/media/graph.5f9700ece98473a95655.png",
     "static/media/littlebro_and_I.png": "/ottovintola.com/static/media/littlebro_and_I.8f6e9375720967dc79d5.png",
@@ -11,11 +11,11 @@
     "static/media/gd.png": "/ottovintola.com/static/media/gd.a7180c151485a0181496.png",
     "index.html": "/ottovintola.com/index.html",
     "main.f4d4707f.css.map": "/ottovintola.com/static/css/main.f4d4707f.css.map",
-    "main.315c08b4.js.map": "/ottovintola.com/static/js/main.315c08b4.js.map",
+    "main.e19e2f51.js.map": "/ottovintola.com/static/js/main.e19e2f51.js.map",
     "453.fc9d5551.chunk.js.map": "/ottovintola.com/static/js/453.fc9d5551.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f4d4707f.css",
-    "static/js/main.315c08b4.js"
+    "static/js/main.e19e2f51.js"
   ]
 }
