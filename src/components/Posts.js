@@ -5,9 +5,9 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import * as ReactDOMClient from 'react-dom/client';
 
-
 // Import images
-import vaeImage from '../assets/vae.png';
+// import vaeImage from \'../assets/vae.png\'; // Removed: Fallback image will now be loaded from public/assets
+
 
 // Helper function to create a slug from a title (basic example)
 const createSlug = (title) => {
@@ -182,10 +182,23 @@ export const Posts = () => {
 
         // Fetch the image mappings
         const imagesResponse = await fetch(`${process.env.PUBLIC_URL}/posts/images.json`);
-        if (!imagesResponse.ok) {
-          throw new Error('Failed to fetch images.json');
+        let imageMap = {}; // Initialize with an empty object
+
+        if (imagesResponse.ok) {
+          try {
+            const imageData = await imagesResponse.json();
+            // Ensure imageData and imageData.images are valid before assignment
+            if (imageData && typeof imageData.images === 'object' && imageData.images !== null) {
+              imageMap = imageData.images;
+            } else {
+              console.warn('images.json was fetched but is not in the expected format (e.g., missing "images" object or "images" is not an object). Proceeding without post-specific images.');
+            }
+          } catch (e) {
+            console.warn('Failed to parse images.json. Proceeding without post-specific images.', e);
+          }
+        } else {
+          console.warn(`Failed to fetch images.json (status: ${imagesResponse.status}). Proceeding without post-specific images.`);
         }
-        const { images: imageMap } = await imagesResponse.json();
 
         // Then load all posts
         const postsData = await Promise.all(
@@ -206,14 +219,14 @@ export const Posts = () => {
             let image;
             if (firstImage) {
               const imageName = firstImage.split('/').pop(); // Get just the filename
-              try {
-                image = require(`../assets/${imageName}`);
-              } catch (e) {
-                console.warn(`Could not load image for ${filename}:`, e);
-                image = vaeImage; // Fallback to default image
+              if (imageName) {
+                image = `${process.env.PUBLIC_URL}/assets/${imageName}`; // Changed: Load from public/assets
+              } else {
+                console.warn(`Could not derive image name for ${filename} from ${firstImage}. Falling back.`);
+                image = null; // Fallback to default image (now a string path from public/assets)
               }
             } else {
-              image = vaeImage; // Fallback to default image
+              image = null; // Fallback to default image (now a string path from public/assets)
             }
             return {
               ...data,

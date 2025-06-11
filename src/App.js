@@ -31,15 +31,15 @@ const Home = () => (
 
     {/* Text in front */}
     <div className="z-10 relative text-4xl md:text-6xl leading-snug">
-      <p>Hello. My name is Otto Vintola.</p>
-      <p className="mt-2 relative z-10"> I am a dreamer, concerned with making machines learn through{" "}
+      <p>Hello.</p>
+      <p className="mt-2 relative z-10">I am fascinated by creating machine intelligence through{" "}
         <span className="relative inline-block px-2 z-10">
-          <span className="relative z-10 italic text-blue-500">patterns</span>
+          <span className="relative z-10 italic text-blue-500">statistics,</span>
           <span className="absolute top-1/2 left-1/2 w-20 h-20 bg-blue-200 rounded-full -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-multiply"></span>
-        </span>{" "}
-        and 
+        </span>{""}
+      
         <span className="relative inline-block px-2">
-          <span className="relative z-10 italic text-green-500">abstraction</span>
+          <span className="relative z-10 italic text-green-500">deep</span>
           <span 
             className="absolute top-1/2 left-1/2 w-20 h-20 bg-green-200 
             -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-multiply"
@@ -48,7 +48,12 @@ const Home = () => (
             }}
           ></span>
         </span>{" "}
-        by weaving chaos with the resonance of observations.
+        learning, and {" "}
+        <span className="relative inline-block px-2">
+          <span className="relative z-10 italic text-red-500">parallelization.</span>
+          <span className="absolute top-1/2 left-1/2 w-20 h-20 bg-red-200 rounded-full -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-multiply"></span>
+        </span>
+
       </p>
 
       {/* Description and Links */}

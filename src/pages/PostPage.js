@@ -21,23 +21,28 @@ import rehypeRaw from 'rehype-raw';
 
 
 const bibMap = {
-    'understanding-variational-autoencoders': '/bibliography/VAE.bib',
-    'quick-notes-on-finetuning-deep-learning-models': '/bibliography/finetuning.bib',
-    'multilayer-perceptrons': '/bibliography/multilayer-perceptrons.bib',
-    };
+    'quick-notes-on-finetuning-deep-learning-models': '../bibliography/finetuning.bib',
+    'multilayer-perceptrons': '../bibliography/multilayer-perceptrons.bib',
+};
 
 // Function to fetch markdown based on slug
 async function fetchMarkdownBySlug(slug) {
   // Map slug to markdown file path
   const postMap = {
-    'understanding-variational-autoencoders': '/posts/variational-autoencoders.md',
     'advanced-sql-and-query-optimization': '/posts/advanced-sql-and-query-optimization.md',
     'teaching-the-advanced-programming-course': '/posts/programming.md',
     'quick-notes-on-finetuning-deep-learning-models': '/posts/finetuning-deep-learning-models.md',
     'multilayer-perceptrons': '/posts/multilayer-perceptrons.md',
-    "some-recent-thoughts": '/posts/Some recent thoughts.md',
-
+    "some-recent-thoughts": '/posts/Some recent thoughts.md'
   };
+
+  // debug the postMap and file structure
+  console.log('PostMap:', postMap);
+  console.log('Slug:', slug);
+
+  // log current public URL and path
+  console.log('Public URL:', process.env.PUBLIC_URL);
+  console.log('Post Path:', postMap[slug]);
 
 
   const postPath = postMap[slug];
