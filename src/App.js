@@ -91,7 +91,7 @@ export default function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} /> 
           <Route path="/blog" element={<Blog />} />
           <Route path="/reading" element={<Reading />} />
           <Route path="/pictures" element={<Pictures />} />
