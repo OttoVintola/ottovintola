@@ -122,11 +122,12 @@ To highlight the difference consider these two following queries ran on the [`bi
 SELECT * FROM `bigquery-public-data.github_repos.contents
 ```
 
+Data processed: 2682.118 GB 
+
 ```sql
 SELECT size, binary FROM `bigquery-public-data.github_repos.contents
 ```
 
-Data processed: 2682.118 GB 
 Data processed: 2.531 GB
 
 
@@ -142,13 +143,13 @@ FROM CountryTable
 WHERE CountryCode = 'US'
 ```
 
+Since, the `CountryCode` and `Country` have a 1-to-1 correspondence, we can exclude one of them and use the other like below:
+
 ```sql
 SELECT Country, Population, GDP
 FROM CountryTable
 WHERE Country = 'United States'
 ```
-
-Since, the `CountryCode` and `Country` have a 1-to-1 correspondence, we can exclude one of them and use the other.
 
 
 #### 3. Avoid N:N Joins
@@ -159,48 +160,51 @@ The query ran on the `bigquery-public-data.github_repos` below shows the differe
 
 Slow
 ```sql
-                 SELECT repo,
-                     COUNT(DISTINCT c.committer.name) as num_committers,
-                     COUNT(DISTINCT f.id) AS num_files
-                 FROM `bigquery-public-data.github_repos.commits` AS c,
-                     UNNEST(c.repo_name) AS repo
-                 INNER JOIN `bigquery-public-data.github_repos.files` AS f
-                     ON f.repo_name = repo
-                 WHERE f.repo_name IN ( 'tensorflow/tensorflow', 'facebook/react', 'twbs/bootstrap', 'apple/swift', 'Microsoft/vscode', 'torvalds/linux')
-                 GROUP BY repo
-                 ORDER BY repo             
+-- Slow query
+SELECT repo,
+    COUNT(DISTINCT c.committer.name) as num_committers,
+    COUNT(DISTINCT f.id) AS num_files
+FROM `bigquery-public-data.github_repos.commits` AS c,
+    UNNEST(c.repo_name) AS repo
+INNER JOIN `bigquery-public-data.github_repos.files` AS f
+    ON f.repo_name = repo
+WHERE f.repo_name IN ( 'tensorflow/tensorflow', 'facebook/react', 'twbs/bootstr'apple/swift', 'Microsoft/vscode', 'torvalds/linux')
+GROUP BY repo
+ORDER BY repo             
 ```
+
+Time to run: 13.028 seconds 
 
 Fast
 
 ```sql
-             WITH commits AS
-                   (
-                   SELECT COUNT(DISTINCT committer.name) AS num_committers, repo
-                   FROM `bigquery-public-data.github_repos.commits`,
-                       UNNEST(repo_name) as repo
-                   WHERE repo IN ( 'tensorflow/tensorflow', 'facebook/react', 'twbs/bootstrap', 'apple/swift', 'Microsoft/vscode', 'torvalds/linux')
-                   GROUP BY repo
-                   ),
-                   files AS 
-                   (
-                   SELECT COUNT(DISTINCT id) AS num_files, repo_name as repo
-                   FROM `bigquery-public-data.github_repos.files`
-                   WHERE repo_name IN ( 'tensorflow/tensorflow', 'facebook/react', 'twbs/bootstrap', 'apple/swift', 'Microsoft/vscode', 'torvalds/linux')
-                   GROUP BY repo
-                   )
-                   SELECT commits.repo, commits.num_committers, files.num_files
-                   FROM commits 
-                   INNER JOIN files
-                       ON commits.repo = files.repo
-                   ORDER BY repo      
+-- Fast query
+WITH commits AS
+      (
+      SELECT COUNT(DISTINCT committer.name) AS num_committers, repo
+      FROM `bigquery-public-data.github_repos.commits`,
+          UNNEST(repo_name) as repo
+      WHERE repo IN ( 'tensorflow/tensorflow', 'facebook/react', 'twbs/bootstrap', 'apple/swift', 'Microsoft/vscode', 'torvalds/linux')
+      GROUP BY repo
+      ),
+      files AS 
+      (
+      SELECT COUNT(DISTINCT id) AS num_files, repo_name as repo
+      FROM `bigquery-public-data.github_repos.files`
+      WHERE repo_name IN ( 'tensorflow/tensorflow', 'facebook/react', 'twbs/bootstrap', 'apple/swift', 'Microsoft/vscode', 'torvalds/linux')
+      GROUP BY repo
+      )
+      SELECT commits.repo, commits.num_committers, files.num_files
+      FROM commits 
+      INNER JOIN files
+          ON commits.repo = files.repo
+      ORDER BY repo      
                    
 ```
 
-The time difference is not significant for this particular query, but if we run it again and again, the difference will add up.
-
-Time to run: 13.028 seconds 
 Time to run: 4.413 seconds 
+
+The time difference is not significant for this particular query, but if we run it again and again, the difference will add up.
 
 
 ## Conclusion
