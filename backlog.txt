@@ -1,7 +1,11 @@
+
 2. Support Medium articles
 
-3. Make Reading and Pictures pages
+3. Make reading page
 
 4. Make projects page
+
+5. Make pictures page
+
 
 

@@ -2,11 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'; // Added useRef
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import matter from 'gray-matter';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { duotoneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import * as ReactDOMClient from 'react-dom/client';
 
-// Import images
-// import vaeImage from \'../assets/vae.png\'; // Removed: Fallback image will now be loaded from public/assets
 
 
 // Helper function to create a slug from a title (basic example)
@@ -125,10 +123,23 @@ export const PostContent = ({ content }) => {
             </button>
             <SyntaxHighlighter
               language={language}
-              style={vscDarkPlus}
-              PreTag="div"
-              customStyle={{ background: '#e6f2ff', color: '#222', fontSize: '0.7em', position: 'relative' }}
-              codeTagProps={{ style: { background: '#e6f2ff', color: '#222', fontSize: '1.1em' } }}
+              style={duotoneLight}
+              customStyle={{ 
+                background: '#e8f0ff', 
+                color: '#212121', 
+                fontSize: '0.7em', 
+                position: 'relative',
+                margin: 0,
+                padding: '1em'
+              }}
+              codeTagProps={{ 
+                style: { 
+                  background: '#e8f0ff', 
+                  color: '#212121', 
+                  fontSize: '1.1em',
+                  display: 'block'
+                } 
+              }}
             >
               {code}
             </SyntaxHighlighter>
@@ -236,6 +247,8 @@ export const Posts = () => {
             };
           })
         );
+        // Sort posts by date in descending order
+        postsData.sort((a, b) => new Date(b.date) - new Date(a.date));
         setPosts(postsData);
       } catch (error) {
         console.error('Error loading or processing markdown:', error);

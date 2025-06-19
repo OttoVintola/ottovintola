@@ -33,7 +33,8 @@ async function fetchMarkdownBySlug(slug) {
     'teaching-the-advanced-programming-course': '/posts/programming.md',
     'quick-notes-on-finetuning-deep-learning-models': '/posts/finetuning-deep-learning-models.md',
     'multilayer-perceptrons': '/posts/multilayer-perceptrons.md',
-    "some-recent-thoughts": '/posts/Some recent thoughts.md'
+    "some-recent-thoughts": '/posts/Some recent thoughts.md',
+    "bessels-correction": "/posts/bessels-correction.md"
   };
 
   // debug the postMap and file structure
