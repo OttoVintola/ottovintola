@@ -59,8 +59,10 @@ The basic forward, backward and parameter update steps are the most basic form o
 The first one is LoRA [@hu2021loralowrankadaptationlarge], which is a low-rank adaptation method for large language models – retraining models becomes less feasible when the number of parameters get higher. The idea is to use a low-rank approximation of the model to reduce the computational cost of fine-tuning. The pre-trained weight matrix $$ W_0 \in \mathbb{R}^{d \times k} $$ is updated by $$
  W_0 + \Delta W = W_0 + BA $$, where $$ B \in \mathbb{R}^{d \times r} $$ and $$ A \in \mathbb{R}^{r \times k} $$ are low-rank matrices and the rank $$ r << min(d, k) $$ with $$ x \in \mathbb{R}^{k} $$. The matrix $$  W_0  $$ does not receive any gradients, and the low-rank matrices are updated using the standard fine-tuning procedure. 
  
-![A and B are trainable parameters](../images/Finetuning/lora.jpeg)
-*A and B are trainable parameters* [@hu2021loralowrankadaptationlarge].
+<figure style="text-align: center;">
+  <img src="../images/Finetuning/lora.jpeg" alt="A and B are trainable parameters" style="width:50%; display: block; margin-left: auto; margin-right: auto;">
+  <figcaption>A and B are trainable parameters [@hu2021loralowrankadaptationlarge].</figcaption>
+</figure>
 
  The time complexity of LoRA is $$ O(Ax + B(Ax)) = O(rk + dr) = O(r(k + d)) $$ since matrix multiplication has a time complexity of $$ O(n^3) $$ for square matrices. This is a lot faster than the standard fine-tuning procedure which has a time complexity of $$ O(dk) $$.
 
@@ -79,8 +81,10 @@ model = LoRAForSequenceClassification.from_pretrained('bert-base-uncased', confi
 
 The second method is the adapter modules [@houlsby2019parameterefficienttransferlearningnlp], which is a method for fine-tuning large language models. The idea is to add a small set of trainable parameters to the pre-trained model to adapt it to a new task. The adapter modules are added to the pre-trained model and are trained using the standard fine-tuning procedure. 
 
-![Adapters added to a Transformer](../images/Finetuning/adapter.jpeg)
-*Adapters added to a Transformer* [@houlsby2019parameterefficienttransferlearningnlp]
+<figure style="text-align: center;">
+  <img src="../images/Finetuning/adapter.jpeg" alt="A and B are trainable parameters" style="width:50%; display: block; margin-left: auto; margin-right: auto;">
+  <figcaption>Adapters added to a Transformer [@houlsby2019parameterefficienttransferlearningnlp].</figcaption>
+</figure>
 
 
 The following code snippet shows how to add an adapter module to a pre-trained model in `PyTorch`. It is relatively simple to implement, it is just like adding another layer on top of the pre-trained model. 
