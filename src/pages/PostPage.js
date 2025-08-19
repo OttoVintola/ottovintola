@@ -33,7 +33,6 @@ async function fetchMarkdownBySlug(slug) {
     'teaching-the-advanced-programming-course': '/posts/programming.md',
     'quick-notes-on-finetuning-deep-learning-models': '/posts/finetuning-deep-learning-models.md',
     'multilayer-perceptrons': '/posts/multilayer-perceptrons.md',
-    "some-recent-thoughts": '/posts/Some recent thoughts.md',
     "bessels-correction": "/posts/bessels-correction.md"
   };
 
@@ -79,7 +78,7 @@ const remarkRehypeHandlers = {
     return u('text', '\\(' + node.value + '\\)'); // Output MathJax inline delimiter
   },
   math: (h, node) => {
-    return u('text', '\\\\[' + node.value + '\\\\]'); // Output MathJax display delimiter
+    return u('text', '\\[' + node.value + '\\]'); // Output MathJax display delimiter
   }
 };
 
@@ -87,6 +86,7 @@ const PostPage = () => {
   const { slug } = useParams();
   const [postMetadata, setPostMetadata] = useState(null);
   const [processedContent, setProcessedContent] = useState(null);
+  const [bibliography, setBibliography] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   console.log('PostPage slug:', slug);
@@ -96,6 +96,7 @@ const PostPage = () => {
       setError(null);
       setPostMetadata(null);
       setProcessedContent(null);
+      setBibliography(null);
 
       const markdownContent = await fetchMarkdownBySlug(slug);
 
@@ -105,16 +106,15 @@ const PostPage = () => {
           setPostMetadata(metadata);
 
           // --- Fetch and Parse Bibliography ---
-          // Load BibTeX and convert to CSL-JSON if available
           let bibJsonData = null;
-          let bibContent = null;
           const bibFile = bibMap[slug];
           if (bibFile) {
-            bibContent = await fetchBibliography(bibFile.split('/').pop());
+            const bibContent = await fetchBibliography(bibFile.split('/').pop());
             if (bibContent) {
               try {
                 const citeObj = new Cite(bibContent);
                 bibJsonData = citeObj.get(); // CSL-JSON array
+                setBibliography(bibJsonData); // <-- Set bibliography state
               } catch (_) {
                 console.warn('Failed to parse BibTeX for citations.');
               }
@@ -122,55 +122,72 @@ const PostPage = () => {
           }
           // --- End Fetch and Parse Bibliography ---
 
-          // Manual citation numbering in markdown: replace [@key] with [n]
+          // Replace [@key] with a placeholder element for hydration
           let mdToRender = rawMarkdown;
-          const citationKeys = Array.from(mdToRender.matchAll(/\[@([^\]]+)\]/g), m => m[1]);
-          const uniqueKeys = Array.from(new Set(citationKeys));
-          uniqueKeys.forEach((key, i) => {
-            mdToRender = mdToRender.replace(new RegExp(`\\[@${key}\\]`, 'g'), `[${i + 1}]`);
+          const citationKeys = Array.from(new Set(Array.from(mdToRender.matchAll(/\[@([^\]]+)\]/g), m => m[1])));
+          
+          citationKeys.forEach((key, i) => {
+            // Replace with a placeholder span that we can target later
+            mdToRender = mdToRender.replace(new RegExp(`\\[@${key}\\]`, 'g'), `<span class="citation-placeholder" data-citation-key="${key}" data-citation-number="${i + 1}"></span>`);
           });
 
           // --- Process Markdown using unified ---
-          console.log('Setting up processor...');
           const processor = unified()
             .use(remarkParse)
-            .use(remarkMath) // Identifies math syntax
+            .use(remarkMath)
             .use(remarkGfm)
             .use(remarkRehype, { 
               handlers: remarkRehypeHandlers, 
-              allowDangerousHtml: true // Important if handlers were to produce raw HTML, though here we produce text nodes
-            }) // Convert to HTML, using custom handlers for math
-            .use(rehypeRaw) // <-- Add this line to support raw HTML in markdown
+              allowDangerousHtml: true
+            })
+            .use(rehypeRaw)
             .use(rehypeStringify);
 
-          // Process markdown to get HTML
-          console.log('Processing markdown to HTML...');
           const file = await processor.process(mdToRender);
-          console.log('Processing complete.');
-
           let finalHtml = file.toString();
+
           // Append generated References if bibliography data exists
-          if (bibJsonData && uniqueKeys.length) {
-            // Order entries by appearance
-            const ordered = uniqueKeys
+          if (bibJsonData && citationKeys.length) {
+            const ordered = citationKeys
               .map(key => bibJsonData.find(e => e.id === key))
               .filter(Boolean);
-            // Use numeric Vancouver style for bibliography (matches [n] citations)
-            const bibHtmlRaw = new Cite(ordered).format('bibliography', { format: 'html', template: 'vancouver' });
-            // Post-process to remove unwanted line breaks after citation numbers
-            const pattern = new RegExp("(\\\\d+\\\\.)\\\\s*<br\\\\s*/?\\s*>", "gi");
-            const bibHtml = bibHtmlRaw.replace(pattern, '$1 ');
-            finalHtml += `<section><h2>References</h2>${bibHtml}</section>`;
+            
+            const bibHtmlRaw = new Cite(ordered).format('bibliography', { 
+              format: 'html', 
+              template: 'vancouver',
+            });
+            
+            let entryIndex = 0;
+            const bibHtmlWithIds = bibHtmlRaw.replace(/<div class="csl-entry">/g, match => {
+              if (entryIndex < ordered.length) {
+                const id = ordered[entryIndex].id;
+                entryIndex++;
+                return `<div class="csl-entry" id="ref-${id}">`;
+              }
+              return match;
+            });
+
+            // Add styles to prevent newlines in bibliography
+            const bibStyles = `
+              <style>
+                .csl-entry {
+                  display: flex;
+                  align-items: baseline;
+                  margin-bottom: 0.5em;
+                }
+                .csl-left-margin {
+                  flex-shrink: 0;
+                  padding-right: 0.5em;
+                }
+                .csl-right-inline {
+                  flex-grow: 1;
+                }
+              </style>
+            `;
+            
+            finalHtml += `<section><h2>References</h2>${bibStyles}${bibHtmlWithIds}</section>`;
           }
           setProcessedContent(finalHtml);
-          // --- End Process Markdown ---
-
-          // REMOVED MathJax call from here, PostContent will handle it.
-          // if (window.MathJax && window.MathJax.typesetPromise) {
-          //   window.MathJax.typesetPromise();
-          // } else {
-          //   console.warn('MathJax or typesetPromise not available to re-render math.');
-          // }
 
         } catch (processError) {
           console.error('Error in loadAndProcessPost catch block:', processError);
@@ -186,23 +203,31 @@ const PostPage = () => {
   }, [slug]);
 
   if (loading) {
-    return <div>Loading and processing post...</div>; // Updated loading message
+    return <div>Loading and processing post...</div>;
   }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  if (!processedContent) { // Check for processed content instead of post
-    return <div>Post not found or failed to process.</div>; 
+  if (!processedContent) {
+    return <div>Post not found or failed to process.</div>;
   }
 
-  // Pass the HTML string content to PostContent
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Optional: Display title from metadata
-      {postMetadata?.title && <h1 className="text-3xl font-bold mb-4 text-center">{postMetadata.title}</h1>} */}
-      <PostContent content={processedContent} />
+    <div className="post-page">
+      {postMetadata && (
+        <div className="bg-blue-950 text-gray-300 w-full py-12 absolute top-0 left-0 right-0">
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl font-bold mb-2">{postMetadata.title}</h1>
+            <p className="text-lg mb-1">By Otto Vintola</p>
+            {postMetadata.date && <p className="text-sm text-gray-400">Published on {new Date(postMetadata.date).toLocaleDateString()}</p>}
+          </div>
+        </div>
+      )}
+      <div className="container mx-auto px-4 py-8 mt-48">
+        <PostContent content={processedContent} bibData={bibliography} />
+      </div>
     </div>
   );
 };

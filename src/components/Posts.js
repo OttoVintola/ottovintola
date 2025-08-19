@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { duotoneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import * as ReactDOMClient from 'react-dom/client';
+import Citation from './Citation'; // Import the Citation component
 
 
 
@@ -32,7 +33,7 @@ export const PostCard = ({ title, excerpt, image, date, onClick }) => (
 );
 
 // Update PostContent to handle HTML content and trigger MathJax
-export const PostContent = ({ content }) => {
+export const PostContent = ({ content, bibData }) => {
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -149,6 +150,25 @@ export const PostContent = ({ content }) => {
     }
   }, [content]);
 
+  // Hydrate citations
+  useEffect(() => {
+    if (contentRef.current && bibData) {
+      const citationPlaceholders = contentRef.current.querySelectorAll('.citation-placeholder');
+      citationPlaceholders.forEach(placeholder => {
+        const key = placeholder.getAttribute('data-citation-key');
+        const number = placeholder.getAttribute('data-citation-number');
+        const entry = bibData.find(e => e.id === key);
+
+        if (entry) {
+          if (!placeholder._root) {
+            placeholder._root = ReactDOMClient.createRoot(placeholder);
+          }
+          placeholder._root.render(<Citation number={number} bibData={entry} />);
+        }
+      });
+    }
+  }, [content, bibData]);
+
   // Add a little CSS for the copy button (optional, for hover effect)
   useEffect(() => {
     const styleId = 'copy-btn-style';
@@ -171,7 +191,7 @@ export const PostContent = ({ content }) => {
   return (
     <div
       ref={contentRef}
-      className="prose lg:prose-xl mx-auto text-black"
+      className="prose prose-neutral lg:prose prose-p:text-black prose-headings:text-black prose-strong:text-black mx-auto"
       dangerouslySetInnerHTML={{ __html: renderContent() }}
     />
   );
