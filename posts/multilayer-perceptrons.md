@@ -140,11 +140,3 @@ where $ \theta $ are the parameters of the model and $ f $ is the output of the 
 ```From here we can notice that backpropagation relies on the idea that, each connection in the network is affected by the previous layers value propagating to the output layer where the loss was calculated.``` Recursively calculating derivatives of the loss function with respect to the parameters of the model and the output of the model is the main idea of backpropagation. **Storing the intermediate steps of the calculation is crucial for the efficiency**.
 
 ---
-
-## Conclusion
-
-Deep learning has been around for a long time, but it has only recently become popular due to the increase in computational power and the increase in the amount of data available. Deep learning is a subset of machine learning where the labels are defined by the computer itself.
-
-In this article we covered the basics about multilayer perceptrons – and the relevant equations – to hopefully shed some light into this bundle of complexity. I got to recap many important topics and ideas as well. 
-
-I want to take the time to finally thank you (the reader) for reading this article. I hope you found it interesting and that you learned something new. If you have any questions or comments, feel free to email me at ```otto.vintola@aalto.fi```.
