@@ -1,5 +1,5 @@
 ---
-title: Advanced SQL and Query Optimization
+title: Optimizing SQL Queries for Speed
 date: 2024-02-26 11:12
 excerpt: What I learned about SQL and making queries run faster and more sustainably than before
 image: /Users/otto/personal-website/ottovintola/public/assets/sql.png
