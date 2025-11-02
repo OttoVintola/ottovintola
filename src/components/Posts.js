@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'; // Added useRef
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate and Link
 import matter from 'gray-matter';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { duotoneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -16,18 +16,33 @@ const createSlug = (title) => {
     .replace(/[^\w-]+/g, ''); // Remove non-word characters except hyphens
 };
 
-export const PostCard = ({ title, excerpt, image, date, onClick }) => (
-  <div 
-    onClick={onClick}
-    className="cursor-pointer bg-white rounded-xl shadow-lg overflow-hidden transform transition hover:scale-105 hover:shadow-xl"
-  >
-    <div className="h-48 overflow-hidden">
-      <img src={image} alt={title} className="w-full h-full object-contain" />
-    </div>
-    <div className="p-6">
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-gray-600 text-sm mb-2">{new Date(date).toLocaleDateString()}</p>
-      <p className="text-gray-700">{excerpt}</p>
+export const PostCard = ({ title, excerpt, image, date, slug }) => (
+  <div className="overflow-hidden">
+    <div className="flex">
+      {/* Left: image thumbnail as link */}
+  <Link to={`/post/${slug}`} className="shrink-0 w-36 h-36 sm:w-44 sm:h-44 bg-transparent overflow-hidden block">
+        {image ? (
+          <img src={image} alt={title} className="w-full h-full object-contain" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+            No image
+          </div>
+        )}
+      </Link>
+      {/* Right: text content */}
+      <div className="p-4 sm:p-6 flex-1">
+        <h3 className="text-xl font-bold mb-2">
+          <Link to={`/post/${slug}`} className="hover:underline focus:underline">
+            {title}
+          </Link>
+        </h3>
+        {date && (
+          <p className="text-gray-600 text-sm mb-2">
+            {new Date(date).toLocaleDateString()}
+          </p>
+        )}
+        {excerpt && <p className="text-gray-700">{excerpt}</p>}
+      </div>
     </div>
   </div>
 );
@@ -284,14 +299,9 @@ export const Posts = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 gap-6">
       {posts.map((post, index) => (
-        <PostCard
-          key={index}
-          {...post} // Pass all post data including slug (though PostCard doesn't use it)
-          // Update onClick to navigate using the post's slug
-          onClick={() => handlePostClick(post.slug)} 
-        />
+        <PostCard key={index} {...post} />
       ))}
     </div>
   );

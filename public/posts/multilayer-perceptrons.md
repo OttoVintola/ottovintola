@@ -1,7 +1,7 @@
 ---
 title: "Multilayer Perceptrons"
 date: "2024-02-20"
-excerpt: "A brief introduction to the theory behind deep learning, linear classifiers, gradient descent and backpropagation explained by going through the necessary information to understand multilayer perceptrons."
+excerpt: "A brief introduction to the theory behind deep learning, linear classifiers, gradient descent and backpropagation through multilayer perceptrons."
 image: "../assets/MLP.jpg"
 ---
 

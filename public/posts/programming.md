@@ -1,7 +1,7 @@
 ---
 title: Teaching the advanced programming course
 date: "2024-05-30"
-excerpt: Teaching was a pleasure regardless of the challenges
+excerpt: Teaching was great fun
 image: "../assets/bigo.png"
 ---
 

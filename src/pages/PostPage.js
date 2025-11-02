@@ -29,7 +29,7 @@ const bibMap = {
 async function fetchMarkdownBySlug(slug) {
   // Map slug to markdown file path
   const postMap = {
-    'advanced-sql-and-query-optimization': '/posts/advanced-sql-and-query-optimization.md',
+    'optimizing-sql-queries-for-speed': '/posts/advanced-sql-and-query-optimization.md',
     'teaching-the-advanced-programming-course': '/posts/programming.md',
     'quick-notes-on-finetuning-deep-learning-models': '/posts/finetuning-deep-learning-models.md',
     'multilayer-perceptrons': '/posts/multilayer-perceptrons.md',

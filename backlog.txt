@@ -1,11 +1,11 @@
 
-2. Support Medium articles
 
-3. Make reading page
+Support Medium articles
 
-4. Make projects page
+Add descriptions to images
 
-5. Make pictures page
+Make news section
+
 
 
 
