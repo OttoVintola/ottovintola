@@ -15,7 +15,6 @@ const Layout = ({ children, showHeader = true }) => (
           </h1>
           <nav className="space-x-4">
             <Link to="/blog" className="hover:underline">Blog</Link>
-            <Link to="/tinkerings" className="hover:underline">Tinkerings</Link>
             <Link to="/pictures" className="hover:underline">Pictures</Link>
           </nav>
         </div>
@@ -56,12 +55,25 @@ const Home = () => (
 
         <br /><br />
 
-        Outside of academia and work, I enjoy swimming and photography.
+        Outside of academia and industry, I enjoy swimming and photography. 
+        <br /><br />
+
+        You can find me on <a href="https://www.youtube.com/@ottovintola" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">YouTube</a>.
+
         </p>
       </div>
     </div>
 
-  
+    <figure className="mt-10 mx-auto max-w-3xl">
+      <blockquote className="relative border-l-4 border-gray-200 pl-6 sm:pl-8 italic text-gray-700 text-lg sm:text-xl leading-relaxed mb-0">
+        <p className="relative">
+          What I cannot build, I do not understand.
+        </p>
+      </blockquote>
+      <figcaption className="mt-0 pl-6 sm:pl-8 text-sm text-gray-500">
+        — <cite className="not-italic">Richard Feynman</cite>
+      </figcaption>
+    </figure>
 
     {/* Featured Posts Section */}
     <div className="mt-32 relative z-10">
@@ -84,7 +96,6 @@ const Blog = () => (
   </div>
 );
 
-const Tinkerings = () => <div className="text-2xl">Tinkering projects coming soon...</div>;
 const PicturesPage = () => <Pictures />;
 
 export default function App() {
@@ -96,7 +107,6 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/blog" element={<Blog />} />
-              <Route path="/projects" element={<Tinkerings />} />
               <Route path="/pictures" element={<PicturesPage />} />
             </Routes>
           </Layout>
