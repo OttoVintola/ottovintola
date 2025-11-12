@@ -14,6 +14,9 @@
         ],
         "bessels-correction.md": [
             "../assets/bessel.png"
+        ],
+        "the-tale-of-reusing-a-desktop-for-cuda-development.md": [
+            "../assets/desktop.png"
         ]
     }
 }

@@ -1,9 +1,10 @@
-{
+{ 
   "posts": [
     "advanced-sql-and-query-optimization.md",
     "finetuning-deep-learning-models.md",
     "multilayer-perceptrons.md",
     "programming.md",
-    "bessels-correction.md"
+    "bessels-correction.md",
+    "the-tale-of-reusing-a-desktop-for-cuda-development.md"
   ]
 }
