@@ -1,4 +1,3 @@
-import React from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // For default styling
 import 'tippy.js/themes/light.css'; // or any other theme
@@ -26,7 +25,13 @@ const Citation = ({ number, bibData }) => {
   // Create a simple representation of the bibliography entry for the tooltip.
   // This can be customized to format the CSL-JSON data as needed.
   const formatBibData = (data) => {
-    const authors = data.author ? data.author.map(a => `${a.given} ${a.family}`).join(', ') : '';
+    const authors = data.author ? data.author.map(a => {
+      // Handle corporate authors (literal) vs personal authors (given/family)
+      if (a.literal) return a.literal;
+      const given = a.given || '';
+      const family = a.family || '';
+      return `${given} ${family}`.trim();
+    }).filter(Boolean).join(', ') : '';
     const title = data.title || 'No title';
     const year = data.issued ? data.issued['date-parts'][0][0] : '';
     const container = data['container-title'] || '';
@@ -34,7 +39,7 @@ const Citation = ({ number, bibData }) => {
     const url = data.URL || '';
 
     let formatted = '';
-    if (authors) formatted += `${authors}. `;
+    if (authors) formatted += `${authors} `;
     if (year) formatted += `(${year}). `;
     formatted += `<em>${title}</em>. `;
     if (container) formatted += `${container}. `;

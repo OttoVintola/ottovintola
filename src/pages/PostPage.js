@@ -23,7 +23,7 @@ import rehypeRaw from 'rehype-raw';
 const bibMap = {
     'quick-notes-on-finetuning-deep-learning-models': '../bibliography/finetuning.bib',
     'multilayer-perceptrons': '../bibliography/multilayer-perceptrons.bib',
-    'the-tale-of-reusing-an-nvidia-desktop': '../bibliography/Desktop.bib',
+    'the-tale-of-reusing-a-desktop-for-cuda-development': '../bibliography/Desktop.bib',
 };
 
 // Function to fetch markdown based on slug
