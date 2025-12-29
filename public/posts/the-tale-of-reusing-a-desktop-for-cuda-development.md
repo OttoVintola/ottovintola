@@ -28,14 +28,56 @@ With the OS installed and access setup, a normal server would be all set, howeve
   <figcaption>ATX specification explicitly mentioning standby voltage for features such as WoL in February 1997 [@atx].</figcaption>
 </figure>
 
-Since suspending the machine effectively disables remote access after a short period of time, I could either: keep the machine running at all times or figure out a method to power it on and off remotely. This functionality can be facilitated with an embedded device, I had an old RaspberryPi lying around. 
+Since suspending the machine effectively disables remote access after a short period of time, I could either: keep the machine running at all times or figure out a method to power it on and off remotely. This functionality can be facilitated with an embedded device—I had an old RaspberryPi lying around. 
 
 ## Solution
 
-Here is some text
+I did not want to keep the machine running at all times, since it would sit idle most of the time and waste electricity, I had to engineer a solution. The remote power management works for devices in the same network, thus, I placed a [Raspberry Pi 1 Model B+](https://www.raspberrypi.com/products/raspberry-pi-1-model-b-plus/) from 2014, that acts as a wake up tool. Now, all I have to do is ```SSH``` into the microcontroller and power on/off the desktop. 
 
+Only one issue remained; changing IP addresses. The network the desktop and Raspberry Pi are connected to uses dynamic IP addressing. Therefore, the IP address of the microcontroller would change eventually. Initially, I tried configuring ```noip2``` update client configured with [my.noip.com](my.noip.com) but the client was surprisingly memory hungry and would continuosly yield ```segfaults```. Therefore, I had to improvise.
 
+I made the following python script to retrieve the current public IP address of the network and write it to a private gist on GitHub. 
+```python
+import requests, os 
+ip = requests.get("https://api.ipify.org").text 
+token = os.getenv("GIST_TOKEN") 
+gist_id = os.getenv("GIST_ID") 
+requests.patch(
+  f"https://api.github.com/gists/{gist_id}",
+  headers={"Authorization": f"token {token}"},
+  json={"files": {"current_ip.txt": {"content": ip}}}, 
+)
+```
 
+Then I configured the script to run every 10 minutes with ```cron``` and voilà:
+<figure style="text-align: center;">
+  <img src="../images/desktop/voila.jpeg"  style="width:100%; display: block; margin-left: auto; margin-right: auto;">
+  <figcaption>Custom dynamic IP address update.</figcaption>
+</figure>
 
+To use the desktop now, I had to wake it up by remotely logging into the microcontroller and executing a ```wakeonlan``` command to the desktop's MAC address. However, this seemed cumbersome and a perfect place to do some bash scripting. Effectively, I needed something to fetch the IP of the microcontroller and remotely execute a bash script via ```SSH``` to wake up the desktop. The following is what I created:
 
+```bash
+#!/bin/bash
+if wget -q --spider http://google.com; then
 
+        echo "Getting current IP from gist..."
+        ip=$(curl -s https://gist.githubusercontent.com/[omitted]$
+
+        echo "Current IP is: $ip"
+        ssh -p [omitted] [omitted]@$ip 'bash -s' < ./wakeup.sh
+else
+        echo "Offline (google.com page availability not reached)"
+fi
+```
+
+Executing the above now yields:
+
+```bash
+Getting current IP from gist...
+Current IP is: [omitted]
+Waking up desktop on [MAC address]
+Sending magic packet to [broadcast] with [MAC]
+```
+
+Great success! 
