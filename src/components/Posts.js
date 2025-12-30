@@ -293,11 +293,6 @@ export const Posts = () => {
     loadPosts();
   }, []);
 
-  // Handle navigation in the onClick handler
-  const handlePostClick = (slug) => {
-    navigate(`/post/${slug}`);
-  };
-
   return (
     <div className="grid grid-cols-1 gap-6">
       {posts.map((post, index) => (

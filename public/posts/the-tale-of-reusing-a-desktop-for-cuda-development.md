@@ -1,6 +1,6 @@
 ---
 title: "The tale of reusing a desktop for CUDA development"
-excerpt: "The journey takes us through Windows, Ubuntu, wakeonlan of setting up a Ubuntu CUDA workspace from an old Windows Desktop"
+excerpt: "The journey goes through Windows, Ubuntu, wakeonlan, dynamic IPs, microcontrollers and bash."
 date: "2025-10-02"
 image: "../assets/desktop.png"
 ---
@@ -71,7 +71,7 @@ else
 fi
 ```
 
-Executing the above now yields:
+The ```if-else``` structure is there to ensure that nothing is attempted without internet connection. Executing the above now yields:
 
 ```bash
 Getting current IP from gist...
@@ -80,4 +80,4 @@ Waking up desktop on [MAC address]
 Sending magic packet to [broadcast] with [MAC]
 ```
 
-Great success! 
+Great success! After a few bumps in the road—that were flattened with a RaspberryPi, GitHub and a little bit of python and bash scripting—I can finally use my desktop remotely. 
