@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Posts } from './components/Posts';
-import { Pictures } from './components/Pictures';
 import { Videos } from './components/Videos';
 import PostPage from './pages/PostPage'; // Import the new PostPage component
 
@@ -15,7 +14,6 @@ const Layout = ({ children, showHeader = true }) => (
           </h1>
           <nav className="space-x-4">
             <Link to="/blog" className="hover:underline">Blog</Link>
-            <Link to="/pictures" className="hover:underline">Pictures</Link>
           </nav>
         </div>
       </header>
@@ -38,20 +36,30 @@ const Home = () => (
   <div className="relative">
 
     <div className="flex flex-col md:flex-row-reverse items-start md:items-center gap-6">
-      <img
-        src="/assets/prof.JPG"
-        alt="Otto Vintola"
-        className="w-36 h-36 md:w-96 md:h-96 object-cover border border-gray-200"
-        loading="eager"
-        decoding="async"
-      />
+      <div className="relative w-60 md:w-[52rem] group">
+        <img
+          src="/assets/bw-c.jpeg"
+          alt="Otto Vintola"
+          className="w-full h-auto transition-opacity duration-300 group-hover:opacity-0"
+          loading="eager"
+          decoding="async"
+        />
+        <img
+          src="/assets/ocean.jpeg"
+          alt="Ocean"
+          className="absolute top-0 left-0 w-full h-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
       <div className="z-10 relative text-xl md:text-1xl leading-snug">
-        <p className="mt-2 relative z-10">Hello! I am a graduate student (MSc) at <a href="https://www.aalto.fi/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Aalto University</a>
+        <p className="mt-2 relative z-10">Hello! I am a graduate student (MSc) at <a href="https://www.aalto.fi/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline"> Aalto University </a>
         in <a href="https://www.aalto.fi/en/study-options/machine-learning-data-science-and-artificial-intelligence-master-of-science-technology" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Machine Learning, Data Science and Artificial Intelligence</a>.
         Previously, I completed my BSc in Data Science, also at Aalto. 
         <br /><br />
-        Currently, I am interested in machine learning, statistics, and computer architecture. I have had the great fortune to work on cloud software at <a href="https://www.nokia.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Nokia </a> 
-        and machine learning for health at <a href="https://www.terveystalo.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Terveystalo</a>.
+        I have had the great fortune to work on cloud software at <a href="https://www.nokia.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Nokia </a> 
+        and machine learning for health at <a href="https://www.terveystalo.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Terveystalo</a>. Currently, 
+        founding the engineering for charging solutions at <a href="https://www.evmobile.uk/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">EV Mobile</a>.
 
         <br /><br />
 
@@ -96,8 +104,6 @@ const Blog = () => (
   </div>
 );
 
-const PicturesPage = () => <Pictures />;
-
 export default function App() {
   return (
     <Router>
@@ -107,7 +113,6 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/blog" element={<Blog />} />
-              <Route path="/pictures" element={<PicturesPage />} />
             </Routes>
           </Layout>
         } />

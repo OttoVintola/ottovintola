@@ -35,7 +35,8 @@ async function fetchMarkdownBySlug(slug) {
     'quick-notes-on-finetuning-deep-learning-models': '/posts/finetuning-deep-learning-models.md',
     'multilayer-perceptrons': '/posts/multilayer-perceptrons.md',
     "bessels-correction": "/posts/bessels-correction.md",
-    "the-tale-of-reusing-a-desktop-for-cuda-development": "/posts/the-tale-of-reusing-a-desktop-for-cuda-development.md"
+    "the-tale-of-reusing-a-desktop-for-cuda-development": "/posts/the-tale-of-reusing-a-desktop-for-cuda-development.md",
+    "korjaus-ainolle": "/posts/korjaus-ainolle.md",
   };
 
   // debug the postMap and file structure

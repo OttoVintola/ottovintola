@@ -284,7 +284,9 @@ export const Posts = () => {
         );
         // Sort posts by date in descending order
         postsData.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setPosts(postsData);
+        // Filter out posts that are not visible
+        const visiblePosts = postsData.filter(post => post.visible !== false);
+        setPosts(visiblePosts);
       } catch (error) {
         console.error('Error loading or processing markdown:', error);
       }
