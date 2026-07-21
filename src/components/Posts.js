@@ -38,7 +38,7 @@ export const PostCard = ({ title, excerpt, image, date, slug }) => (
         </h3>
         {date && (
           <p className="text-gray-600 text-sm mb-2">
-            {new Date(date).toLocaleDateString()}
+            {new Date(date).toLocaleDateString()} 
           </p>
         )}
         {excerpt && <p className="text-gray-700">{excerpt}</p>}

@@ -36,7 +36,7 @@ const Home = () => (
   <div className="relative">
 
     <div className="flex flex-col md:flex-row-reverse items-start md:items-center gap-6">
-      <div className="relative w-60 md:w-[52rem] group">
+      <div className="relative w-[10.5rem] md:w-[26.4rem] group">
         <img
           src="/assets/bw-c.jpeg"
           alt="Otto Vintola"
@@ -53,35 +53,24 @@ const Home = () => (
         />
       </div>
       <div className="z-10 relative text-xl md:text-1xl leading-snug">
-        <p className="mt-2 relative z-10">Hello! I am a graduate student (MSc) at <a href="https://www.aalto.fi/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline"> Aalto University </a>
-        in <a href="https://www.aalto.fi/en/study-options/machine-learning-data-science-and-artificial-intelligence-master-of-science-technology" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Machine Learning, Data Science and Artificial Intelligence</a>.
-        Previously, I completed my BSc in Data Science, also at Aalto. 
-        <br /><br />
-        I have had the great fortune to work on cloud software at <a href="https://www.nokia.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Nokia </a> 
-        and machine learning for health at <a href="https://www.terveystalo.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Terveystalo</a>. Currently, 
-        founding the engineering for charging solutions at <a href="https://www.evmobile.uk/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">EV Mobile</a>.
+        <p>
+          I enjoy swimming and photography.
 
-        <br /><br />
-
-        Outside of academia and industry, I enjoy swimming and photography. 
-        <br /><br />
-
-        You can find me on <a href="https://www.youtube.com/@ottovintola" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">YouTube</a>.
-
+          You can find me on <a href="https://www.youtube.com/@ottovintola" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">YouTube</a>.
         </p>
+
+        <figure className="mt-10 max-w-3xl">
+          <blockquote className="relative border-l-4 border-gray-200 pl-6 sm:pl-8 italic text-gray-700 text-lg sm:text-xl leading-relaxed mb-0">
+            <p className="relative">
+              What I cannot build, I do not understand.
+            </p>
+          </blockquote>
+          <figcaption className="mt-0 pl-6 sm:pl-8 text-sm text-gray-500">
+            — <cite className="not-italic">Richard Feynman</cite>
+          </figcaption>
+        </figure>
       </div>
     </div>
-
-    <figure className="mt-10 mx-auto max-w-3xl">
-      <blockquote className="relative border-l-4 border-gray-200 pl-6 sm:pl-8 italic text-gray-700 text-lg sm:text-xl leading-relaxed mb-0">
-        <p className="relative">
-          What I cannot build, I do not understand.
-        </p>
-      </blockquote>
-      <figcaption className="mt-0 pl-6 sm:pl-8 text-sm text-gray-500">
-        — <cite className="not-italic">Richard Feynman</cite>
-      </figcaption>
-    </figure>
 
     {/* Featured Posts Section */}
     <div className="mt-32 relative z-10">

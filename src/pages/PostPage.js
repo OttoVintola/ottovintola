@@ -24,6 +24,7 @@ const bibMap = {
     'quick-notes-on-finetuning-deep-learning-models': '../bibliography/finetuning.bib',
     'multilayer-perceptrons': '../bibliography/multilayer-perceptrons.bib',
     'the-tale-of-reusing-a-desktop-for-cuda-development': '../bibliography/Desktop.bib',
+    'deceptively-compliant-matrix-algebra-in-numpy.md': '../bibliography/numpy.bib',
 };
 
 // Function to fetch markdown based on slug
@@ -37,6 +38,7 @@ async function fetchMarkdownBySlug(slug) {
     "bessels-correction": "/posts/bessels-correction.md",
     "the-tale-of-reusing-a-desktop-for-cuda-development": "/posts/the-tale-of-reusing-a-desktop-for-cuda-development.md",
     "korjaus-ainolle": "/posts/korjaus-ainolle.md",
+    "deceptively-compliant-matrix-algebra-in-numpy": "/posts/deceptively-compliant-matrix-algebra-in-numpy.md",
   };
 
   // debug the postMap and file structure

@@ -5,6 +5,7 @@
     "multilayer-perceptrons.md",
     "programming.md",
     "bessels-correction.md",
-    "the-tale-of-reusing-a-desktop-for-cuda-development.md"
+    "the-tale-of-reusing-a-desktop-for-cuda-development.md",
+    "deceptively-compliant-matrix-algebra-in-numpy.md"
   ]
 }
