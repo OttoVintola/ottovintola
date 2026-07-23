@@ -30,3 +30,7 @@ backlog.txt
 
 PHOTOGRAPHY_README.md
 .vscode/
+
+
+**.venv
+**_pycache__/
