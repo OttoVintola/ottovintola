@@ -17,6 +17,9 @@
         ],
         "the-tale-of-reusing-a-desktop-for-cuda-development.md": [
             "../assets/desktop.png"
+        ],
+        "outsourcing-thinking-to-llms.md": [
+            "../assets/lora.png"
         ]
     }
 }
