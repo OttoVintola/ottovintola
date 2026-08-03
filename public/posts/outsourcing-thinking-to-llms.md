@@ -42,3 +42,4 @@ The aforementioned displays the real difficulty in applying this to real-life: d
 
 ## The Evidence
 
+From a business perspective, many organizations have prospered by keeping core competencies and considering transaction economics. Of course there are other relevant decisions and factors in successful business and distinguishing the driving ones can be difficult, nevertheless many firms have effectively employed the RBV- and TCE-based approaches. For example, 
